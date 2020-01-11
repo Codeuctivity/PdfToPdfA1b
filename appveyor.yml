@@ -26,8 +26,8 @@ dotnet_csproj:
   file_version: '{version}'
   informational_version: '{version}'
 
- artifacts:
- - path: '**\PdfToPdfA1b.*.nupkg'
+artifacts:
+- path: '**\PdfToPdfA1b.*.nupkg'
 
 deploy:
 - provider: GitHub
