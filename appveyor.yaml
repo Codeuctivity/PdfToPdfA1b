@@ -1,5 +1,6 @@
 version: 1.0.{build}
 image: Visual Studio 2019
+build:
 skip_tags: true
 branches:
   only:
@@ -27,6 +28,7 @@ dotnet_csproj:
 
  artifacts:
  - path: '**\PdfToPdfA1b.*.nupkg'
+ 
 deploy:
 - provider: GitHub
   prerelease: true
