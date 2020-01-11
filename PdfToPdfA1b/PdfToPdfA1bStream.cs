@@ -11,8 +11,8 @@ namespace PdfToPdfA
 {
     public class PdfToPdfA1bStreamable : IDisposable
     {
-        private bool disposedValue = false;
-        private MemoryStream convertedPdfA1b;
+        private bool disposedValue;
+        private readonly MemoryStream convertedPdfA1b;
         private Stream iccFileInputStream { get; }
         public PdfToPdfA1bStreamable()
         {

@@ -12,7 +12,6 @@ namespace PdfToPdfA1bTest
         [Fact]
         public void ShouldConvertToCompliantPdfA1bFromStream()
         {
-            var sourceFile = File.ReadAllBytes(PathSourcePdf);
             using (var sourcePdfStream = new FileStream(PathSourcePdf, FileMode.Open, FileAccess.Read))
             {
                 using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
