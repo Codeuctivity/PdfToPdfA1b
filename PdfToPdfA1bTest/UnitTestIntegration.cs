@@ -5,9 +5,10 @@ using System.IO;
 
 namespace PdfToPdfA1bTest
 {
-    public class UnitTestIntegration
+    public class UnitTestIntegration : IClassFixture<PdfAValidatorFixture>
     {
         private const string PathSourcePdf = "./TestFiles/FromLibreOfficeNonPdfA.pdf";
+        private const string PathSourceMozillaPdf = "./TestFiles/Mozilla.pdf";
 
         [Fact]
         public void ShouldConvertToCompliantPdfA1bFromStream()
@@ -17,11 +18,8 @@ namespace PdfToPdfA1bTest
                 using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
                 {
                     var validPdfA1b = pdfToPdfA1bStream.Convert(sourcePdfStream);
-                    File.WriteAllBytes("ConvertedFromLibreOfficeNonPdfA.pdf", validPdfA1b.ToArray());
+                    AssertPdfA(validPdfA1b);
                 }
-
-                using (var validator = new PdfAValidator.PdfAValidator())
-                    Assert.True(validator.Validate("ConvertedFromLibreOfficeNonPdfA.pdf"));
             }
         }
 
@@ -30,10 +28,8 @@ namespace PdfToPdfA1bTest
         {
             var validPdfA1b = PdfToPdfA1b.Convert(PathSourcePdf);
 
-            File.WriteAllBytes("ConvertedFromLibreOfficeNonPdfA.pdf", validPdfA1b);
-
-            using (var validator = new PdfAValidator.PdfAValidator())
-                Assert.True(validator.Validate("ConvertedFromLibreOfficeNonPdfA.pdf"));
+            using (var validPdfA1bStream = new MemoryStream(validPdfA1b))
+                AssertPdfA(validPdfA1bStream);
         }
 
         [Fact]
@@ -41,10 +37,42 @@ namespace PdfToPdfA1bTest
         {
             var sourceFile = File.ReadAllBytes(PathSourcePdf);
             var validPdfA1b = PdfToPdfA1b.Convert(sourceFile);
-            File.WriteAllBytes("ConvertedFromLibreOfficeNonPdfA.pdf", validPdfA1b);
 
-            using (var validator = new PdfAValidator.PdfAValidator())
-                Assert.True(validator.Validate("ConvertedFromLibreOfficeNonPdfA.pdf"));
+            using (var validPdfA1bStream = new MemoryStream(validPdfA1b))
+                AssertPdfA(validPdfA1bStream);
+        }
+
+        [Fact]
+        public void ShouldConvertMozilla()
+        {
+            using (var sourcePdfStream = new FileStream(PathSourceMozillaPdf, FileMode.Open, FileAccess.Read))
+            {
+                using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
+                {
+                    var validPdfA1b = pdfToPdfA1bStream.Convert(sourcePdfStream);
+                    //TODO get fonts embedded
+                    //AssertPdfA(validPdfA1b);
+                }
+
+            }
+        }
+
+        private void AssertPdfA(MemoryStream validPdfA1b)
+        {
+            var tempPdfFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pdf");
+
+            try
+            {
+                File.WriteAllBytes(tempPdfFileName, validPdfA1b.ToArray());
+
+                Assert.True(PdfAValidatorFixture.Validator.Validate(tempPdfFileName));
+            }
+            finally
+            {
+                File.Delete(tempPdfFileName);
+            }
         }
     }
+
+
 }

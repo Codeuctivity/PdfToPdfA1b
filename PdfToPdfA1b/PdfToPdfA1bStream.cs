@@ -9,11 +9,17 @@ using iTextSharp.text.pdf;
 
 namespace PdfToPdfA
 {
+    /// <summary>
+    /// Converts plain Pdfs to PdfA-1b
+    /// </summary>
     public class PdfToPdfA1bStreamable : IDisposable
     {
         private bool disposedValue;
         private readonly MemoryStream convertedPdfA1b;
         private Stream iccFileInputStream { get; }
+        /// <summary>
+        /// default ctor
+        /// </summary>
         public PdfToPdfA1bStreamable()
         {
             convertedPdfA1b = new MemoryStream();
@@ -21,12 +27,17 @@ namespace PdfToPdfA
             iccFileInputStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("PdfToPdfA1b.sRGB2014.icc");
         }
 
+        /// <summary>
+        /// Converts a plain Pdf to a PdfA-1b
+        /// </summary>
+        /// <param name="sourcePdf"></param>
+        /// <returns></returns>
         public MemoryStream Convert(Stream sourcePdf)
         {
             var pdfReader = new PdfReader(sourcePdf);
             var sourcePageCount = pdfReader.NumberOfPages;
-
             var pageSizeFirstPage = pdfReader.GetPageSize(1);
+
 
             // step 1: creation of a document-object
             var document = new Document(pageSizeFirstPage, 0, 0, 0, 0);
@@ -67,6 +78,10 @@ namespace PdfToPdfA
             return convertedPdfA1b;
         }
 
+        /// <summary>
+        /// disposes resources
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -81,6 +96,9 @@ namespace PdfToPdfA
             }
         }
 
+        /// <summary>
+        /// disposes resources
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
