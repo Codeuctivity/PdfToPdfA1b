@@ -14,7 +14,7 @@
     <PackageVersion>1.0.0</PackageVersion>
     <PackageIcon>NugetIcon.png</PackageIcon>
     <PackageProjectUrl>https://github.com/Codeuctivity/PdfToPdfA1b</PackageProjectUrl>
-    <Description>PdfToPdfA1b is a .net standard assembly cappable to add PdfA-1b metadata to an existing Pdf.</Description>
+    <Description>PdfToPdfA1b is a .net standard assembly capable to add PdfA-1b metadata to an existing Pdf.</Description>
     <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <AssemblyOriginatorKeyFile>PdfToPdfA1b.snk</AssemblyOriginatorKeyFile>
