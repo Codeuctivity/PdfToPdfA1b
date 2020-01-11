@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+ <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RepositoryUrl>https://github.com/Codeuctivity/PdfToPdfA1b</RepositoryUrl>
+    <PackageTags>Pdf PdfA Pdf/A</PackageTags>
+    <Authors>Stefan Seeland</Authors>
+    <Company>Codeuctivity</Company>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.0</Version>
+    <PackageVersion>1.0.0</PackageVersion>
+    <PackageIcon>NugetIcon.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/Codeuctivity/PdfToPdfA1b</PackageProjectUrl>
+    <Description>PdfToPdfA1b is a .net standard assembly cappable to add PdfA-1b metadata to an existing Pdf.</Description>
+    <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <AssemblyOriginatorKeyFile>PdfToPdfA1b.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="iTextSharp.LGPLv2.Core" Version="1.6.1" />
+  </ItemGroup>
+
+<ItemGroup>
+    <None Remove="sRGB2014.icc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="sRGB2014.icc" />
+  </ItemGroup>
+
+   <ItemGroup>
+    <None Include="NugetIcon.png" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
+</Project>
