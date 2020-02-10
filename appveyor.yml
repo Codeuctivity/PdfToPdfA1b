@@ -23,7 +23,7 @@ dotnet_csproj:
   patch: true
   file: '**\*.csproj'
   version: "{version}"
-  package_version: "{version}-prerelease"
+  package_version: "{version}"
   assembly_version: "{version}"
   file_version: "{version}"
   informational_version: "{version}"
@@ -33,7 +33,6 @@ artifacts:
 
 deploy:
   - provider: GitHub
-    prerelease: true
     auth_token:
       secure: cm3wTP8rsFspZYpKCb63n0p4vRkEeZ+zXkEe/YxwRFW9D9m0yp2u0NdFnieLCWs3
   - provider: NuGet

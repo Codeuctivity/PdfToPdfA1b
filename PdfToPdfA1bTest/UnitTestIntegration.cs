@@ -49,15 +49,13 @@ namespace PdfToPdfA1bTest
             {
                 using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
                 {
-                    var validPdfA1b = pdfToPdfA1bStream.Convert(sourcePdfStream);
-                    //TODO get fonts embedded
-                    //AssertPdfA(validPdfA1b);
+                    var validPdfA1b = pdfToPdfA1bStream.Convert(sourcePdfStream, true);
+                    AssertPdfA(validPdfA1b);
                 }
-
             }
         }
 
-        private void AssertPdfA(MemoryStream validPdfA1b)
+        private static void AssertPdfA(MemoryStream validPdfA1b)
         {
             var tempPdfFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pdf");
 

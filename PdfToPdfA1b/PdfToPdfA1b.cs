@@ -12,13 +12,14 @@ namespace PdfToPdfA
         /// Converts a plain Pdf to a PdfA-1b
         /// </summary>
         /// <param name="sourcePdf"></param>
-        /// <returns></returns>
-        static public byte[] Convert(byte[] sourcePdf)
+        /// <param name="embeddFonts">default is false</param>
+        /// <returns>Pdf</returns>
+        static public byte[] Convert(byte[] sourcePdf, bool embeddFonts = false)
         {
             using (var sourcePdfStream = new MemoryStream(sourcePdf))
             using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
             {
-                return pdfToPdfA1bStream.Convert(sourcePdfStream).ToArray();
+                return pdfToPdfA1bStream.Convert(sourcePdfStream, embeddFonts).ToArray();
             }
         }
 
@@ -26,13 +27,14 @@ namespace PdfToPdfA
         /// Converts a plain Pdf to a PdfA-1b
         /// </summary>
         /// <param name="pathSourcePdf"></param>
-        /// <returns></returns>
-        static public byte[] Convert(string pathSourcePdf)
+        /// <param name="embeddFonts">default is false</param>
+        /// <returns>Pdf</returns>
+        static public byte[] Convert(string pathSourcePdf, bool embeddFonts = false)
         {
             using (var sourcePdfStream = new FileStream(pathSourcePdf, FileMode.Open, FileAccess.Read))
             using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
             {
-                return pdfToPdfA1bStream.Convert(sourcePdfStream).ToArray();
+                return pdfToPdfA1bStream.Convert(sourcePdfStream, embeddFonts).ToArray();
             }
         }
     }
