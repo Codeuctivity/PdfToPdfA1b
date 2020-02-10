@@ -73,7 +73,9 @@ namespace PdfToPdfA
             finally
             {
                 if (embeddFonts)
+                {
                     DeleteFileIfExists(tempPdfFileNameEmbeddedFonts);
+                }
             }
         }
 
@@ -125,7 +127,9 @@ namespace PdfToPdfA
         private static void DeleteFileIfExists(string tempPdfFileName)
         {
             if (File.Exists(tempPdfFileName))
+            {
                 File.Delete(tempPdfFileName);
+            }
         }
 
         /// <summary>
