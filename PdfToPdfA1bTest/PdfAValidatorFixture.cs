@@ -1,7 +1,4 @@
 using System;
-using Xunit;
-using PdfToPdfA;
-using System.IO;
 
 namespace PdfToPdfA1bTest
 {
@@ -12,11 +9,27 @@ namespace PdfToPdfA1bTest
             Validator = new PdfAValidator.PdfAValidator();
         }
 
-        public void Dispose()
+        public static PdfAValidator.PdfAValidator Validator { get; private set; }
+
+        private bool disposedValue = false;
+
+        protected virtual void Dispose(bool disposing)
         {
-            Validator.Dispose();
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Validator.Dispose();
+                }
+
+                disposedValue = true;
+            }
         }
 
-        public static PdfAValidator.PdfAValidator Validator { get; private set; }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

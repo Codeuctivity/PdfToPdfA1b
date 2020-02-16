@@ -1,11 +1,11 @@
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using System;
 using System.IO;
 using System.Reflection;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
 
 // archived itext forum http://itext-general.2136553.n4.nabble.com/ for itexSharp Lgpl from the old days
-// set page size before calling NewPage() to get support for multiple pagesize in one document http://kuujinbo.info/iTextSharp/pageResize.aspx
+// set page size before calling NewPage() to get support for multiple page size in one document http://kuujinbo.info/iTextSharp/pageResize.aspx
 
 namespace PdfToPdfA
 {
@@ -14,17 +14,29 @@ namespace PdfToPdfA
     /// </summary>
     public class PdfToPdfA1bStreamable : IDisposable
     {
+        private const string IEC61966 = "sRGB IEC61966-2.1";
         private bool disposedValue;
         private readonly MemoryStream convertedPdfA1b;
         private Stream iccFileInputStream { get; }
+
         /// <summary>
         /// default ctor
         /// </summary>
         public PdfToPdfA1bStreamable()
         {
             convertedPdfA1b = new MemoryStream();
-            // Got Icc profile from http://www.color.org/srgbprofiles.xalter
+            // Got ICC profile from http://www.color.org/srgbprofiles.xalter
             iccFileInputStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("PdfToPdfA1b.sRGB2014.icc");
+        }
+
+        /// <summary>
+        /// Converts a plain Pdf to a PdfA-1b
+        /// </summary>
+        /// <param name="sourcePdf"></param>
+        /// <returns></returns>
+        public MemoryStream Convert(Stream sourcePdf)
+        {
+            return Convert(sourcePdf, false);
         }
 
         /// <summary>
@@ -33,53 +45,58 @@ namespace PdfToPdfA
         /// <param name="sourcePdf"></param>
         /// <param name="embeddFonts">default is false</param>
         /// <returns></returns>
-        public MemoryStream Convert(Stream sourcePdf, bool embeddFonts = false)
+        public MemoryStream Convert(Stream sourcePdf, bool embeddFonts)
+        {
+            if (sourcePdf is null)
+            {
+                throw new ArgumentNullException(nameof(sourcePdf));
+            }
+
+            if (!embeddFonts)
+            {
+                return EmbeddMetadata(sourcePdf);
+            }
+
+            return EmbeddFonts(sourcePdf);
+        }
+
+        private MemoryStream EmbeddFonts(Stream sourcePdf)
         {
             var tempPdfFileNameEmbeddedFonts = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pdf");
+            var tempPdfFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pdf");
             try
             {
-                if (embeddFonts)
+                using (var fileStream = new FileStream(tempPdfFileName, FileMode.Create, FileAccess.Write))
                 {
-                    var tempPdfFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pdf");
-                    using (var fileStream = new FileStream(tempPdfFileName, FileMode.Create, System.IO.FileAccess.Write))
+                    if (sourcePdf.CanSeek)
                     {
-                        var bytes = new byte[sourcePdf.Length];
-                        sourcePdf.Read(bytes, 0, (int)sourcePdf.Length);
-                        fileStream.Write(bytes, 0, bytes.Length);
-                        sourcePdf.Close();
+                        sourcePdf.Seek(0, SeekOrigin.Begin);
                     }
-                    try
-                    {
-                        using (var postscriptValidator = new PostScriptValidator.PostScriptValidator())
-                            postscriptValidator.EmbedFonts(tempPdfFileName, tempPdfFileNameEmbeddedFonts);
-                        using (var memoryStreamEmbeddedFonts = new MemoryStream())
-                        using (FileStream file = new FileStream(tempPdfFileNameEmbeddedFonts, FileMode.Open, FileAccess.Read))
-                        {
-                            byte[] bytes = new byte[file.Length];
-                            file.Read(bytes, 0, (int)file.Length);
-                            memoryStreamEmbeddedFonts.Write(bytes, 0, (int)file.Length);
-                            memoryStreamEmbeddedFonts.Seek(0, SeekOrigin.Begin);
-                            return embeddMetadata(memoryStreamEmbeddedFonts);
-                        }
-                    }
-                    finally
-                    {
-                        DeleteFileIfExists(tempPdfFileName);
-                    }
+
+                    sourcePdf.CopyTo(fileStream);
                 }
 
-                return embeddMetadata(sourcePdf);
+                using (var postscriptValidator = new PostScriptValidator.PostScriptValidator())
+                {
+                    postscriptValidator.EmbedFonts(tempPdfFileName, tempPdfFileNameEmbeddedFonts);
+                }
+
+                using (var memoryStreamEmbeddedFonts = new MemoryStream())
+                using (var file = new FileStream(tempPdfFileNameEmbeddedFonts, FileMode.Open, FileAccess.Read))
+                {
+                    file.CopyTo(memoryStreamEmbeddedFonts);
+                    memoryStreamEmbeddedFonts.Seek(0, SeekOrigin.Begin);
+                    return EmbeddMetadata(memoryStreamEmbeddedFonts);
+                }
             }
             finally
             {
-                if (embeddFonts)
-                {
-                    DeleteFileIfExists(tempPdfFileNameEmbeddedFonts);
-                }
+                DeleteFileIfExists(tempPdfFileNameEmbeddedFonts);
+                DeleteFileIfExists(tempPdfFileName);
             }
         }
 
-        private MemoryStream embeddMetadata(Stream sourcePdf)
+        private MemoryStream EmbeddMetadata(Stream sourcePdf)
         {
             var pdfReader = new PdfReader(sourcePdf);
             var sourcePageCount = pdfReader.NumberOfPages;
@@ -95,10 +112,10 @@ namespace PdfToPdfA
             // step 3: we open the document
             document.Open();
 
-            // step 3a: add pdfA flavour
+            // step 3a: add pdfA flavor
             var pdfDictonary = new PdfDictionary(PdfName.Outputintent);
-            pdfDictonary.Put(PdfName.Outputconditionidentifier, new PdfString("sRGB IEC61966-2.1"));
-            pdfDictonary.Put(PdfName.Info, new PdfString("sRGB IEC61966-2.1"));
+            pdfDictonary.Put(PdfName.Outputconditionidentifier, new PdfString(IEC61966));
+            pdfDictonary.Put(PdfName.Info, new PdfString(IEC61966));
             pdfDictonary.Put(PdfName.S, PdfName.GtsPdfa1);
             var pdfAFriendlyIccProfile = new PdfIccBased(IccProfile.GetInstance(iccFileInputStream));
             pdfAFriendlyIccProfile.Remove(PdfName.Alternate);
@@ -108,7 +125,7 @@ namespace PdfToPdfA
             // step 4: we add content
             var directContent = pdfWriter.DirectContent;
 
-            for (int i = 1; i <= sourcePageCount; i++)
+            for (var i = 1; i <= sourcePageCount; i++)
             {
                 document.SetPageSize(pdfReader.GetPageSize(i));
                 document.NewPage();
@@ -116,7 +133,7 @@ namespace PdfToPdfA
                 directContent.AddTemplate(currentPage, 0, 0);
             }
 
-            // step 4a: more pdfA flavour
+            // step 4a: more pdfA flavor
             pdfWriter.CreateXmpMetadata();
 
             // step 5: we close the document
@@ -156,6 +173,7 @@ namespace PdfToPdfA
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

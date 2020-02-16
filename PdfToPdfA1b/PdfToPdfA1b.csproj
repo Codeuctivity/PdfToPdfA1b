@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -13,7 +13,7 @@
     <PackageVersion>1.0.0</PackageVersion>
     <PackageIcon>NugetIcon.png</PackageIcon>
     <PackageProjectUrl>https://github.com/Codeuctivity/PdfToPdfA1b</PackageProjectUrl>
-    <Description>PdfToPdfA1b is a .net standard assembly capable to add PdfA-1b metadata to an existing Pdf.</Description>
+    <Description>PdfToPdfA1b is a .net standard assembly capable to add PdfA-1b meta data to an existing Pdf.</Description>
     <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <AssemblyOriginatorKeyFile>PdfToPdfA1b.snk</AssemblyOriginatorKeyFile>
@@ -38,8 +38,12 @@
 
   <ItemGroup>
     <PackageReference Include="iTextSharp.LGPLv2.Core.StrongName" Version="1.6.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="postscriptvalidator" Version="1.0.22" />
+    <PackageReference Include="postscriptvalidator" Version="1.0.24" />
   </ItemGroup>
 
 </Project>
