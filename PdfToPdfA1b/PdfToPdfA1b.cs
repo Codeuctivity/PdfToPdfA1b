@@ -15,9 +15,11 @@ namespace PdfToPdfA
         public static byte[] Convert(byte[] sourcePdf)
         {
             using (var sourcePdfStream = new MemoryStream(sourcePdf))
-            using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
             {
-                return pdfToPdfA1bStream.Convert(sourcePdfStream, false).ToArray();
+                using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
+                {
+                    return pdfToPdfA1bStream.Convert(sourcePdfStream, false).ToArray();
+                }
             }
         }
 
@@ -25,14 +27,14 @@ namespace PdfToPdfA
         /// Converts a plain Pdf to a PdfA-1b
         /// </summary>
         /// <param name="sourcePdf"></param>
-        /// <param name="embeddFonts">default is false</param>
+        /// <param name="embedFonts">default is false</param>
         /// <returns>Pdf</returns>
-        public static byte[] Convert(byte[] sourcePdf, bool embeddFonts)
+        public static byte[] Convert(byte[] sourcePdf, bool embedFonts)
         {
             using (var sourcePdfStream = new MemoryStream(sourcePdf))
             using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
             {
-                return pdfToPdfA1bStream.Convert(sourcePdfStream, embeddFonts).ToArray();
+                return pdfToPdfA1bStream.Convert(sourcePdfStream, embedFonts).ToArray();
             }
         }
 
@@ -54,14 +56,14 @@ namespace PdfToPdfA
         /// Converts a plain Pdf to a PdfA-1b
         /// </summary>
         /// <param name="pathSourcePdf"></param>
-        /// <param name="embeddFonts">default is false</param>
+        /// <param name="embedFonts">default is false</param>
         /// <returns>Pdf</returns>
-        public static byte[] Convert(string pathSourcePdf, bool embeddFonts)
+        public static byte[] Convert(string pathSourcePdf, bool embedFonts)
         {
             using (var sourcePdfStream = new FileStream(pathSourcePdf, FileMode.Open, FileAccess.Read))
             using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
             {
-                return pdfToPdfA1bStream.Convert(sourcePdfStream, embeddFonts).ToArray();
+                return pdfToPdfA1bStream.Convert(sourcePdfStream, embedFonts).ToArray();
             }
         }
     }

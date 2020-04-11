@@ -13,14 +13,10 @@ namespace PdfToPdfA1bTest
         [Fact]
         public void ShouldConvertToCompliantPdfA1bFromStream()
         {
-            using (var sourcePdfStream = new FileStream(PathSourcePdf, FileMode.Open, FileAccess.Read))
-            {
-                using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
-                {
-                    var validPdfA1b = pdfToPdfA1bStream.Convert(sourcePdfStream);
-                    AssertPdfA(validPdfA1b);
-                }
-            }
+            using var sourcePdfStream = new FileStream(PathSourcePdf, FileMode.Open, FileAccess.Read);
+            using var pdfToPdfA1bStream = new PdfToPdfA1bStreamable();
+            var validPdfA1b = pdfToPdfA1bStream.Convert(sourcePdfStream);
+            AssertPdfA(validPdfA1b);
         }
 
         [Fact]
@@ -28,39 +24,33 @@ namespace PdfToPdfA1bTest
         {
             var validPdfA1b = PdfToPdfA1b.Convert(PathSourcePdf);
 
-            using (var validPdfA1bStream = new MemoryStream(validPdfA1b))
-            {
-                AssertPdfA(validPdfA1bStream);
-            }
+            using var validPdfA1bStream = new MemoryStream(validPdfA1b);
+            AssertPdfA(validPdfA1bStream);
         }
 
         [Theory]
         // TODO find out, why embedding second time makes this test green
         //[InlineData(true)]
         [InlineData(false)]
-        public void ShouldConvertToCompliantPdfA1bFromFileOverloadEmbeddFontsPath(bool embeddFonts)
+        public void ShouldConvertToCompliantPdfA1bFromFileOverloadEmbeddFontsPath(bool embedFonts)
         {
-            var validPdfA1b = PdfToPdfA1b.Convert(PathSourcePdf, embeddFonts);
+            var validPdfA1b = PdfToPdfA1b.Convert(PathSourcePdf, embedFonts);
 
-            using (var validPdfA1bStream = new MemoryStream(validPdfA1b))
-            {
-                AssertPdfA(validPdfA1bStream);
-            }
+            using var validPdfA1bStream = new MemoryStream(validPdfA1b);
+            AssertPdfA(validPdfA1bStream);
         }
 
         [Theory]
         [InlineData(true, PathSourceMozillaPdf)]
         [InlineData(true, PathSourcePdf)]
         [InlineData(false, PathSourcePdf)]
-        public void ShouldConvertToCompliantPdfA1bCascading(bool embeddFonts, string path)
+        public void ShouldConvertToCompliantPdfA1bCascading(bool embedFonts, string path)
         {
-            var validPdfA1b = PdfToPdfA1b.Convert(path, embeddFonts);
+            var validPdfA1b = PdfToPdfA1b.Convert(path, embedFonts);
 
-            using (var validPdfA1bStream = new MemoryStream(validPdfA1b))
-            using (var pdfToPdfA1bStreamable = new PdfToPdfA1bStreamable())
-            {
-                AssertPdfA(pdfToPdfA1bStreamable.Convert(validPdfA1bStream, embeddFonts));
-            }
+            using var validPdfA1bStream = new MemoryStream(validPdfA1b);
+            using var pdfToPdfA1bStreamable = new PdfToPdfA1bStreamable();
+            AssertPdfA(pdfToPdfA1bStreamable.Convert(validPdfA1bStream, embedFonts));
         }
 
         [Fact]
@@ -69,38 +59,30 @@ namespace PdfToPdfA1bTest
             var sourceFile = File.ReadAllBytes(PathSourcePdf);
             var validPdfA1b = PdfToPdfA1b.Convert(sourceFile);
 
-            using (var validPdfA1bStream = new MemoryStream(validPdfA1b))
-            {
-                AssertPdfA(validPdfA1bStream);
-            }
+            using var validPdfA1bStream = new MemoryStream(validPdfA1b);
+            AssertPdfA(validPdfA1bStream);
         }
 
         [Theory]
         // TODO find out, why embedding second time makes this test green
         //[InlineData(true)]
         [InlineData(false)]
-        public void ShouldConvertToCompliantPdfA1bFromByteArrayOverloadEmbeddFontsPath(bool embeddFonts)
+        public void ShouldConvertToCompliantPdfA1bFromByteArrayOverloadEmbeddFontsPath(bool embedFonts)
         {
             var sourceFile = File.ReadAllBytes(PathSourcePdf);
-            var validPdfA1b = PdfToPdfA1b.Convert(sourceFile, embeddFonts);
+            var validPdfA1b = PdfToPdfA1b.Convert(sourceFile, embedFonts);
 
-            using (var validPdfA1bStream = new MemoryStream(validPdfA1b))
-            {
-                AssertPdfA(validPdfA1bStream);
-            }
+            using var validPdfA1bStream = new MemoryStream(validPdfA1b);
+            AssertPdfA(validPdfA1bStream);
         }
 
         [Fact]
         public void ShouldConvertPdfWithReferencedFonts()
         {
-            using (var sourcePdfStream = new FileStream(PathSourceMozillaPdf, FileMode.Open, FileAccess.Read))
-            {
-                using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
-                {
-                    var validPdfA1b = pdfToPdfA1bStream.Convert(sourcePdfStream, true);
-                    AssertPdfA(validPdfA1b);
-                }
-            }
+            using var sourcePdfStream = new FileStream(PathSourceMozillaPdf, FileMode.Open, FileAccess.Read);
+            using var pdfToPdfA1bStream = new PdfToPdfA1bStreamable();
+            var validPdfA1b = pdfToPdfA1bStream.Convert(sourcePdfStream, true);
+            AssertPdfA(validPdfA1b);
         }
 
         private static void AssertPdfA(MemoryStream validPdfA1b)
@@ -130,15 +112,13 @@ namespace PdfToPdfA1bTest
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void ShouldDisposeWithoutException(bool embeddFonts)
+        public void ShouldDisposeWithoutException(bool embedFonts)
         {
-            using (var sourcePdfStream = new FileStream(PathSourceMozillaPdf, FileMode.Open, FileAccess.Read))
-            using (var pdfToPdfA1bStreamable = new PdfToPdfA1bStreamable())
-            {
-                _ = pdfToPdfA1bStreamable.Convert(sourcePdfStream, embeddFonts);
-                pdfToPdfA1bStreamable.Dispose();
-                pdfToPdfA1bStreamable.Dispose();
-            }
+            using var sourcePdfStream = new FileStream(PathSourceMozillaPdf, FileMode.Open, FileAccess.Read);
+            using var pdfToPdfA1bStreamable = new PdfToPdfA1bStreamable();
+            _ = pdfToPdfA1bStreamable.Convert(sourcePdfStream, embedFonts);
+            pdfToPdfA1bStreamable.Dispose();
+            pdfToPdfA1bStreamable.Dispose();
         }
 
         [Fact]

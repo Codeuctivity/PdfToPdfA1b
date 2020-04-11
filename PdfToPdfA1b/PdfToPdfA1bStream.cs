@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-// archived itext forum http://itext-general.2136553.n4.nabble.com/ for itexSharp Lgpl from the old days
+// archived iText forum http://itext-general.2136553.n4.nabble.com/ for iTexSharp Lgpl from the old days
 // set page size before calling NewPage() to get support for multiple page size in one document http://kuujinbo.info/iTextSharp/pageResize.aspx
 
 namespace PdfToPdfA
@@ -17,7 +17,7 @@ namespace PdfToPdfA
         private const string IEC61966 = "sRGB IEC61966-2.1";
         private bool disposedValue;
         private readonly MemoryStream convertedPdfA1b;
-        private Stream iccFileInputStream { get; }
+        private Stream IccFileInputStream { get; }
 
         /// <summary>
         /// default ctor
@@ -26,7 +26,7 @@ namespace PdfToPdfA
         {
             convertedPdfA1b = new MemoryStream();
             // Got ICC profile from http://www.color.org/srgbprofiles.xalter
-            iccFileInputStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("PdfToPdfA1b.sRGB2014.icc");
+            IccFileInputStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("PdfToPdfA1b.sRGB2014.icc");
         }
 
         /// <summary>
@@ -43,24 +43,24 @@ namespace PdfToPdfA
         /// Converts a plain Pdf to a PdfA-1b
         /// </summary>
         /// <param name="sourcePdf"></param>
-        /// <param name="embeddFonts">default is false</param>
+        /// <param name="embedFonts">default is false</param>
         /// <returns></returns>
-        public MemoryStream Convert(Stream sourcePdf, bool embeddFonts)
+        public MemoryStream Convert(Stream sourcePdf, bool embedFonts)
         {
             if (sourcePdf is null)
             {
                 throw new ArgumentNullException(nameof(sourcePdf));
             }
 
-            if (!embeddFonts)
+            if (!embedFonts)
             {
-                return EmbeddMetadata(sourcePdf);
+                return EmbedMetadata(sourcePdf);
             }
 
-            return EmbeddFonts(sourcePdf);
+            return EmbedFonts(sourcePdf);
         }
 
-        private MemoryStream EmbeddFonts(Stream sourcePdf)
+        private MemoryStream EmbedFonts(Stream sourcePdf)
         {
             var tempPdfFileNameEmbeddedFonts = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pdf");
             var tempPdfFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pdf");
@@ -86,7 +86,7 @@ namespace PdfToPdfA
                 {
                     file.CopyTo(memoryStreamEmbeddedFonts);
                     memoryStreamEmbeddedFonts.Seek(0, SeekOrigin.Begin);
-                    return EmbeddMetadata(memoryStreamEmbeddedFonts);
+                    return EmbedMetadata(memoryStreamEmbeddedFonts);
                 }
             }
             finally
@@ -96,7 +96,7 @@ namespace PdfToPdfA
             }
         }
 
-        private MemoryStream EmbeddMetadata(Stream sourcePdf)
+        private MemoryStream EmbedMetadata(Stream sourcePdf)
         {
             var pdfReader = new PdfReader(sourcePdf);
             var sourcePageCount = pdfReader.NumberOfPages;
@@ -113,14 +113,14 @@ namespace PdfToPdfA
             document.Open();
 
             // step 3a: add pdfA flavor
-            var pdfDictonary = new PdfDictionary(PdfName.Outputintent);
-            pdfDictonary.Put(PdfName.Outputconditionidentifier, new PdfString(IEC61966));
-            pdfDictonary.Put(PdfName.Info, new PdfString(IEC61966));
-            pdfDictonary.Put(PdfName.S, PdfName.GtsPdfa1);
-            var pdfAFriendlyIccProfile = new PdfIccBased(IccProfile.GetInstance(iccFileInputStream));
+            var pdfDictionary = new PdfDictionary(PdfName.Outputintent);
+            pdfDictionary.Put(PdfName.Outputconditionidentifier, new PdfString(IEC61966));
+            pdfDictionary.Put(PdfName.Info, new PdfString(IEC61966));
+            pdfDictionary.Put(PdfName.S, PdfName.GtsPdfa1);
+            var pdfAFriendlyIccProfile = new PdfIccBased(IccProfile.GetInstance(IccFileInputStream));
             pdfAFriendlyIccProfile.Remove(PdfName.Alternate);
-            pdfDictonary.Put(PdfName.Destoutputprofile, pdfWriter.AddToBody(pdfAFriendlyIccProfile).IndirectReference);
-            pdfWriter.ExtraCatalog.Put(PdfName.Outputintents, new PdfArray(pdfDictonary));
+            pdfDictionary.Put(PdfName.Destoutputprofile, pdfWriter.AddToBody(pdfAFriendlyIccProfile).IndirectReference);
+            pdfWriter.ExtraCatalog.Put(PdfName.Outputintents, new PdfArray(pdfDictionary));
 
             // step 4: we add content
             var directContent = pdfWriter.DirectContent;
@@ -159,7 +159,7 @@ namespace PdfToPdfA
             {
                 if (disposing)
                 {
-                    iccFileInputStream.Dispose();
+                    IccFileInputStream.Dispose();
                     convertedPdfA1b.Dispose();
                 }
 
