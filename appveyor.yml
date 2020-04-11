@@ -10,9 +10,6 @@ branches:
   only:
     - master
 configuration: Release
-nuget:
-  account_feed: true
-  project_feed: true
 build:
   project: PdfToPdfA1b.sln
   verbosity: minimal
