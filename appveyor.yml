@@ -3,6 +3,9 @@ skip_tags: true
 image:
   - Visual Studio 2019
   - Ubuntu
+before_build:
+  - ps: >-
+      dotnet restore
 branches:
   only:
     - master
