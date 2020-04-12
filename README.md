@@ -11,3 +11,11 @@ public void AddsPdfAMetadata()
     File.WriteAllBytes("./superValidPdfA-1b.pdf", validPdfA1b);
 }
 ```
+
+## Dependencies
+
+Embedding fonts currently bases on ghostscript. If you run on linux you need to install ghostscript using
+
+```bash
+sudo apt install ghostscript
+```

@@ -1,15 +1,15 @@
 version: 1.0.{build}
-skip_tags: true
 image:
-  - Visual Studio 2019
   - Ubuntu
+  - Visual Studio 2019
+skip_tags: true
+configuration: Release
 before_build:
   - ps: >-
       dotnet restore
-branches:
-  only:
-    - master
-configuration: Release
+
+install:
+  - sh: sudo apt install ghostscript -y
 build:
   project: PdfToPdfA1b.sln
   verbosity: minimal
