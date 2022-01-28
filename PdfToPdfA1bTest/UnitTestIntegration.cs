@@ -32,12 +32,12 @@ namespace Codeuctivity1bTest
         // TODO find out, why embedding second time makes this test green
         //[InlineData(true)]
         [InlineData(false)]
-        public void ShouldConvertToCompliantPdfA1bFromFileOverloadEmbeddFontsPath(bool embedFonts)
+        public async Task ShouldConvertToCompliantPdfA1bFromFileOverloadEmbeddFontsPathAsync(bool embedFonts)
         {
             var validPdfA1b = PdfToPdfA1B.Convert(PathSourcePdf, embedFonts);
 
             using var validPdfA1bStream = new MemoryStream(validPdfA1b);
-            AssertPdfA(validPdfA1bStream);
+            await AssertPdfA(validPdfA1bStream);
         }
 
         [Theory]
