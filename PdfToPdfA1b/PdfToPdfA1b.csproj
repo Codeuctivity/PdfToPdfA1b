@@ -30,9 +30,7 @@
 		<NeutralLanguage>en</NeutralLanguage>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<PackageId>Codeuctivity.PdfToPdfA1b</PackageId>
-		<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-			<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-		</PropertyGroup>
+		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
