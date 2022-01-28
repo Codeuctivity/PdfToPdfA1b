@@ -30,7 +30,9 @@
 		<NeutralLanguage>en</NeutralLanguage>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<PackageId>Codeuctivity.PdfToPdfA1b</PackageId>
-		<ContinousIntegrationBuild>true</ContinousIntegrationBuild>
+		<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+			<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		</PropertyGroup>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -50,8 +52,8 @@
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 		<PackageReference Include="postscriptvalidator" Version="1.0.33" />
 		<PackageReference Include="SonarAnalyzer.CSharp" Version="8.34.0.42011">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
