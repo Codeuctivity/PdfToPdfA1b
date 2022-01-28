@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace PdfToPdfA
+namespace Codeuctivity
 {
     /// <summary>
     /// Converts plain Pdfs to PdfA-1b

@@ -1,9 +1,8 @@
 using Codeuctivity;
-using PdfToPdfA;
 using System.IO;
 using Xunit;
 
-namespace PdfToPdfA1bTest
+namespace Codeuctivity1bTest
 {
     public class UnitTestIntegration : IClassFixture<PdfAValidatorFixture>
     {

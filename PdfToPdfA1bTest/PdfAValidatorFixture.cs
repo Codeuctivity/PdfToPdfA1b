@@ -1,7 +1,7 @@
 using Codeuctivity;
 using System;
 
-namespace PdfToPdfA1bTest
+namespace Codeuctivity1bTest
 {
     public class PdfAValidatorFixture : IDisposable
     {

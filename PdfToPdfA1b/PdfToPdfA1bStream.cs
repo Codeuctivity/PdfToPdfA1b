@@ -7,7 +7,7 @@ using System.Reflection;
 // archived iText forum http://itext-general.2136553.n4.nabble.com/ for iTexSharp Lgpl from the old days
 // set page size before calling NewPage() to get support for multiple page size in one document http://kuujinbo.info/iTextSharp/pageResize.aspx
 
-namespace PdfToPdfA
+namespace Codeuctivity
 {
     /// <summary>
     /// Converts plain Pdfs to PdfA-1b
@@ -26,7 +26,9 @@ namespace PdfToPdfA
         {
             convertedPdfA1b = new MemoryStream();
             // Got ICC profile from http://www.color.org/srgbprofiles.xalter
-            IccFileInputStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("PdfToPdfA1b.sRGB2014.icc");
+            var assembly = Assembly.GetExecutingAssembly();
+            IccFileInputStream = assembly.GetManifestResourceStream("Codeuctivity.sRGB2014.icc");
+            IccFileInputStream.Seek(0, SeekOrigin.Begin);
         }
 
         /// <summary>
@@ -159,8 +161,8 @@ namespace PdfToPdfA
             {
                 if (disposing)
                 {
-                    IccFileInputStream.Dispose();
-                    convertedPdfA1b.Dispose();
+                    IccFileInputStream?.Dispose();
+                    convertedPdfA1b?.Dispose();
                 }
 
                 disposedValue = true;
