@@ -1,3 +1,4 @@
+using Codeuctivity;
 using System;
 
 namespace PdfToPdfA1bTest
@@ -6,10 +7,10 @@ namespace PdfToPdfA1bTest
     {
         public PdfAValidatorFixture()
         {
-            Validator = new PdfAValidator.PdfAValidator();
+            Validator = new PdfAValidator();
         }
 
-        public static PdfAValidator.PdfAValidator Validator { get; private set; }
+        public static PdfAValidator Validator { get; private set; }
 
         private bool disposedValue = false;
 

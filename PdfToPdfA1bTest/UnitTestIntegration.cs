@@ -1,4 +1,4 @@
-using PdfAValidator;
+using Codeuctivity;
 using PdfToPdfA;
 using System.IO;
 using Xunit;
@@ -85,13 +85,13 @@ namespace PdfToPdfA1bTest
             AssertPdfA(validPdfA1b);
         }
 
-        private static void AssertPdfA(MemoryStream validPdfA1b)
+        private static async void AssertPdfA(MemoryStream validPdfA1b)
         {
             var tempPdfFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pdf");
 
             File.WriteAllBytes(tempPdfFileName, validPdfA1b.ToArray());
 
-            var report = PdfAValidatorFixture.Validator.ValidateWithDetailedReport(tempPdfFileName);
+            var report = await PdfAValidatorFixture.Validator.ValidateWithDetailedReportAsync(tempPdfFileName);
 
             Assert.True(report.Jobs.Job.ValidationReport.IsCompliant, GetValidationProblemDescriptions(report, tempPdfFileName));
 
