@@ -1,5 +1,6 @@
 using Codeuctivity;
 using System.IO;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Codeuctivity1bTest
@@ -10,21 +11,21 @@ namespace Codeuctivity1bTest
         private const string PathSourceMozillaPdf = "./TestFiles/Mozilla.pdf";
 
         [Fact]
-        public void ShouldConvertToCompliantPdfA1bFromStream()
+        public async Task ShouldConvertToCompliantPdfA1bFromStreamAsync()
         {
             using var sourcePdfStream = new FileStream(PathSourcePdf, FileMode.Open, FileAccess.Read);
-            using var pdfToPdfA1bStream = new PdfToPdfA1bStreamable();
+            using var pdfToPdfA1bStream = new PdfToPdfA1BStreamable();
             var validPdfA1b = pdfToPdfA1bStream.Convert(sourcePdfStream);
-            AssertPdfA(validPdfA1b);
+            await AssertPdfA(validPdfA1b);
         }
 
         [Fact]
-        public void ShouldConvertToCompliantPdfA1bFromFilePath()
+        public async Task ShouldConvertToCompliantPdfA1bFromFilePathAsync()
         {
-            var validPdfA1b = PdfToPdfA1b.Convert(PathSourcePdf);
+            var validPdfA1b = PdfToPdfA1B.Convert(PathSourcePdf);
 
             using var validPdfA1bStream = new MemoryStream(validPdfA1b);
-            AssertPdfA(validPdfA1bStream);
+            await AssertPdfA(validPdfA1bStream);
         }
 
         [Theory]
@@ -33,7 +34,7 @@ namespace Codeuctivity1bTest
         [InlineData(false)]
         public void ShouldConvertToCompliantPdfA1bFromFileOverloadEmbeddFontsPath(bool embedFonts)
         {
-            var validPdfA1b = PdfToPdfA1b.Convert(PathSourcePdf, embedFonts);
+            var validPdfA1b = PdfToPdfA1B.Convert(PathSourcePdf, embedFonts);
 
             using var validPdfA1bStream = new MemoryStream(validPdfA1b);
             AssertPdfA(validPdfA1bStream);
@@ -43,48 +44,48 @@ namespace Codeuctivity1bTest
         [InlineData(true, PathSourceMozillaPdf)]
         [InlineData(true, PathSourcePdf)]
         [InlineData(false, PathSourcePdf)]
-        public void ShouldConvertToCompliantPdfA1bCascading(bool embedFonts, string path)
+        public async Task ShouldConvertToCompliantPdfA1bCascadingAsync(bool embedFonts, string path)
         {
-            var validPdfA1b = PdfToPdfA1b.Convert(path, embedFonts);
+            var validPdfA1b = PdfToPdfA1B.Convert(path, embedFonts);
 
             using var validPdfA1bStream = new MemoryStream(validPdfA1b);
-            using var pdfToPdfA1bStreamable = new PdfToPdfA1bStreamable();
-            AssertPdfA(pdfToPdfA1bStreamable.Convert(validPdfA1bStream, embedFonts));
+            using var pdfToPdfA1bStreamable = new PdfToPdfA1BStreamable();
+            await AssertPdfA(pdfToPdfA1bStreamable.Convert(validPdfA1bStream, embedFonts));
         }
 
         [Fact]
-        public void ShouldConvertToCompliantPdfA1bFromByteArray()
+        public async Task ShouldConvertToCompliantPdfA1bFromByteArrayAsync()
         {
             var sourceFile = File.ReadAllBytes(PathSourcePdf);
-            var validPdfA1b = PdfToPdfA1b.Convert(sourceFile);
+            var validPdfA1b = PdfToPdfA1B.Convert(sourceFile);
 
             using var validPdfA1bStream = new MemoryStream(validPdfA1b);
-            AssertPdfA(validPdfA1bStream);
+            await AssertPdfA(validPdfA1bStream);
         }
 
         [Theory]
         // TODO find out, why embedding second time makes this test green
         //[InlineData(true)]
         [InlineData(false)]
-        public void ShouldConvertToCompliantPdfA1bFromByteArrayOverloadEmbeddFontsPath(bool embedFonts)
+        public async Task ShouldConvertToCompliantPdfA1bFromByteArrayOverloadEmbeddFontsPathAsync(bool embedFonts)
         {
             var sourceFile = File.ReadAllBytes(PathSourcePdf);
-            var validPdfA1b = PdfToPdfA1b.Convert(sourceFile, embedFonts);
+            var validPdfA1b = PdfToPdfA1B.Convert(sourceFile, embedFonts);
 
             using var validPdfA1bStream = new MemoryStream(validPdfA1b);
-            AssertPdfA(validPdfA1bStream);
+            await AssertPdfA(validPdfA1bStream);
         }
 
         [Fact]
-        public void ShouldConvertPdfWithReferencedFonts()
+        public async Task ShouldConvertPdfWithReferencedFontsAsync()
         {
             using var sourcePdfStream = new FileStream(PathSourceMozillaPdf, FileMode.Open, FileAccess.Read);
-            using var pdfToPdfA1bStream = new PdfToPdfA1bStreamable();
+            using var pdfToPdfA1bStream = new PdfToPdfA1BStreamable();
             var validPdfA1b = pdfToPdfA1bStream.Convert(sourcePdfStream, true);
-            AssertPdfA(validPdfA1b);
+            await AssertPdfA(validPdfA1b);
         }
 
-        private static async void AssertPdfA(MemoryStream validPdfA1b)
+        private static async Task AssertPdfA(MemoryStream validPdfA1b)
         {
             var tempPdfFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pdf");
 
@@ -114,19 +115,23 @@ namespace Codeuctivity1bTest
         public void ShouldDisposeWithoutException(bool embedFonts)
         {
             using var sourcePdfStream = new FileStream(PathSourceMozillaPdf, FileMode.Open, FileAccess.Read);
-            using var pdfToPdfA1bStreamable = new PdfToPdfA1bStreamable();
+            using var pdfToPdfA1bStreamable = new PdfToPdfA1BStreamable();
             _ = pdfToPdfA1bStreamable.Convert(sourcePdfStream, embedFonts);
+#pragma warning disable S3966 // Objects should not be disposed more than once, but it should be supported
             pdfToPdfA1bStreamable.Dispose();
             pdfToPdfA1bStreamable.Dispose();
+#pragma warning restore S3966 // Objects should not be disposed more than once, but it should be supported
         }
 
         [Fact]
         public void ShouldDisposeWithoutExceptionWithoutUsingConvert()
         {
-            using (var pdfToPdfA1bStreamable = new PdfToPdfA1bStreamable())
+#pragma warning disable S3966 // Objects should not be disposed more than once, but it should be supported
+            using (var pdfToPdfA1bStreamable = new PdfToPdfA1BStreamable())
             {
                 pdfToPdfA1bStreamable.Dispose();
                 pdfToPdfA1bStreamable.Dispose();
+#pragma warning restore S3966 // Objects should not be disposed more than once, but it should be supported
             }
         }
     }

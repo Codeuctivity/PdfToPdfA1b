@@ -5,7 +5,7 @@ namespace Codeuctivity
     /// <summary>
     /// Converts plain Pdfs to PdfA-1b
     /// </summary>
-    public static class PdfToPdfA1b
+    public static class PdfToPdfA1B
     {
         /// <summary>
         /// Converts a plain Pdf to a PdfA-1b, not embedding fonts
@@ -16,7 +16,7 @@ namespace Codeuctivity
         {
             using (var sourcePdfStream = new MemoryStream(sourcePdf))
             {
-                using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
+                using (var pdfToPdfA1bStream = new PdfToPdfA1BStreamable())
                 {
                     return pdfToPdfA1bStream.Convert(sourcePdfStream, false).ToArray();
                 }
@@ -32,7 +32,7 @@ namespace Codeuctivity
         public static byte[] Convert(byte[] sourcePdf, bool embedFonts)
         {
             using (var sourcePdfStream = new MemoryStream(sourcePdf))
-            using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
+            using (var pdfToPdfA1bStream = new PdfToPdfA1BStreamable())
             {
                 return pdfToPdfA1bStream.Convert(sourcePdfStream, embedFonts).ToArray();
             }
@@ -46,7 +46,7 @@ namespace Codeuctivity
         public static byte[] Convert(string pathSourcePdf)
         {
             using (var sourcePdfStream = new FileStream(pathSourcePdf, FileMode.Open, FileAccess.Read))
-            using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
+            using (var pdfToPdfA1bStream = new PdfToPdfA1BStreamable())
             {
                 return pdfToPdfA1bStream.Convert(sourcePdfStream, false).ToArray();
             }
@@ -61,7 +61,7 @@ namespace Codeuctivity
         public static byte[] Convert(string pathSourcePdf, bool embedFonts)
         {
             using (var sourcePdfStream = new FileStream(pathSourcePdf, FileMode.Open, FileAccess.Read))
-            using (var pdfToPdfA1bStream = new PdfToPdfA1bStreamable())
+            using (var pdfToPdfA1bStream = new PdfToPdfA1BStreamable())
             {
                 return pdfToPdfA1bStream.Convert(sourcePdfStream, embedFonts).ToArray();
             }

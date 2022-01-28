@@ -49,6 +49,10 @@
 		<PackageReference Include="iTextSharp.LGPLv2.Core.StrongName" Version="1.6.71" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 		<PackageReference Include="postscriptvalidator" Version="1.0.33" />
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="8.34.0.42011">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="Properties\Resources.Designer.cs">

@@ -12,7 +12,7 @@ namespace Codeuctivity
     /// <summary>
     /// Converts plain Pdfs to PdfA-1b
     /// </summary>
-    public class PdfToPdfA1bStreamable : IDisposable
+    public class PdfToPdfA1BStreamable : IDisposable
     {
         private const string IEC61966 = "sRGB IEC61966-2.1";
         private bool disposedValue;
@@ -22,7 +22,7 @@ namespace Codeuctivity
         /// <summary>
         /// default ctor
         /// </summary>
-        public PdfToPdfA1bStreamable()
+        public PdfToPdfA1BStreamable()
         {
             convertedPdfA1b = new MemoryStream();
             // Got ICC profile from http://www.color.org/srgbprofiles.xalter
